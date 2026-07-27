@@ -113,9 +113,7 @@ project/
 │   ├── mother_R2.fq.gz
 │   ├── proband_R1.fq.gz
 │   └── proband_R2.fq.gz
-│
-├── assets/
-│   └── hg19_chr8.fa.gz
+│   └──hg19_chr8.fa.gz
 │
 ├── modules/
 ├── main.nf
