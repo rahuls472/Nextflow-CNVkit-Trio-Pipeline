@@ -222,7 +222,6 @@ Nextflow-CNVkit-Trio-Pipeline/
 
 ├── modules/
 ├── Screenshots/
-├── assets/
 ├── data/
 ├── main.nf
 ├── nextflow.config
