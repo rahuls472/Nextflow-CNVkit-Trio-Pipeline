@@ -1,32 +1,36 @@
 # Nextflow-CNVkit-Trio-Pipeline
 
-A modular **Nextflow DSL2** pipeline for **Copy Number Variation (CNV) analysis** from paired-end sequencing data using **CNVkit**. The pipeline performs quality control, read preprocessing, alignment, duplicate marking, CNV reference construction from parental samples, CNV calling for the proband, and exports results in **BED** and **VCF** formats.
+A modular **Nextflow DSL2** pipeline for **trio-based Copy Number Variation (CNV) analysis** from paired-end whole-genome sequencing (WGS) data using **CNVkit**. The workflow performs quality control, read preprocessing, alignment, duplicate marking, CNV reference construction from parental samples, CNV analysis of the proband, CNV calling, and exports the final CNV calls in **BED** and **VCF** formats.
 
 ---
 
-## Features
+## Overview
 
-- Modular Nextflow DSL2 workflow
-- Quality control using FastQC
-- Read trimming using Fastp
-- Alignment using BWA-MEM2
-- BAM sorting and indexing using Samtools
-- Duplicate marking using GATK
-- CNV reference creation using parental samples
-- CNV analysis of the proband using CNVkit
-- CNV calling
-- Export CNVs to BED and VCF
-- Docker compatible
+This pipeline automates the complete CNV analysis workflow for a parent-offspring trio.
+
+### Features
+
+- Modular **Nextflow DSL2** implementation
+- Docker-based reproducible execution
+- FastQC quality assessment
+- Fastp read trimming
+- BWA-MEM2 alignment
+- Samtools sorting and indexing
+- GATK duplicate marking
+- CNVkit reference construction using parental samples
+- CNV calling for the proband
+- Export CNVs to **BED** and **VCF**
+- Easily extensible for downstream annotation
 
 ---
 
-## Workflow
+# Workflow
 
 ![Pipeline DAG](Screenshots/pipeline_dag.png)
 
 ---
 
-## Pipeline Architecture
+# Pipeline Architecture
 
 ```text
 FASTQ
@@ -71,94 +75,132 @@ CNVREFPOOL         │
 
 ---
 
-## Modules
+# Dataset
+
+This pipeline was developed and tested using the publicly available **CNVkit Trio Example Dataset** hosted on **Zenodo**.
+
+### Sequencing Data
+
+| Sample | Read 1 | Read 2 |
+|---------|--------|--------|
+| Father | https://zenodo.org/record/3243160/files/father_R1.fq.gz | https://zenodo.org/record/3243160/files/father_R2.fq.gz |
+| Mother | https://zenodo.org/record/3243160/files/mother_R1.fq.gz | https://zenodo.org/record/3243160/files/mother_R2.fq.gz |
+| Proband | https://zenodo.org/record/3243160/files/proband_R1.fq.gz | https://zenodo.org/record/3243160/files/proband_R2.fq.gz |
+
+### Reference Genome
+
+```
+hg19_chr8.fa.gz
+```
+
+Download:
+
+https://zenodo.org/record/3243160/files/hg19_chr8.fa.gz
+
+These files originate from the CNVkit example dataset and provide a small chromosome-specific dataset suitable for learning and testing CNV analysis workflows. :contentReference[oaicite:0]{index=0}
+
+---
+
+# Expected Directory Structure
+
+```
+project/
+│
+├── data/
+│   ├── father_R1.fq.gz
+│   ├── father_R2.fq.gz
+│   ├── mother_R1.fq.gz
+│   ├── mother_R2.fq.gz
+│   ├── proband_R1.fq.gz
+│   └── proband_R2.fq.gz
+│
+├── assets/
+│   └── hg19_chr8.fa.gz
+│
+├── modules/
+├── main.nf
+└── nextflow.config
+```
+
+---
+
+# Modules
 
 | Module | Description |
 |----------|-------------|
-| REF_INDEXING | Builds BWA reference index |
+| REF_INDEXING | Builds the BWA reference index |
 | FAINDEX | Creates FASTA index |
-| FASTQC | Raw read quality assessment |
+| FASTQC | Performs quality assessment |
 | FASTP | Adapter trimming and quality filtering |
-| ALIGNMENT | Read alignment using BWA-MEM2 |
+| ALIGNMENT | Aligns reads using BWA-MEM2 |
 | SORTING | Coordinate sorting of BAM files |
 | MARKDUPLICATE | Marks PCR duplicates using GATK |
 | BAMINDEX | Generates BAM index (.bai) |
 | CNVREFPOOL | Builds pooled CNV reference from parental BAMs |
 | PROBANDANALYSE | Performs CNV analysis on the proband |
-| CNVCALL | Calls CNVs from segmented data |
-| EXPORTCNV | Exports CNVs to BED and VCF formats |
+| CNVCALL | Calls copy number variants |
+| EXPORTCNV | Exports CNVs in BED and VCF formats |
 
 ---
 
-## Repository Structure
+# Software Used
 
-```text
-Nextflow-CNVkit-Trio-Pipeline/
-│
-├── modules/
-│   ├── alignment.nf
-│   ├── fastp_quality.nf
-│   ├── fastqc_scripts.nf
-│   ├── sorting.nf
-│   ├── markduplicate.nf
-│   ├── bam_indexing.nf
-│   ├── proband_ref.nf
-│   ├── analyse.nf
-│   ├── cnv_call.nf
-│   └── export.nf
-│
-├── Screenshots/
-│   ├── pipeline_dag.png
-│   └── terminal_process.png
-│
-├── main.nf
-├── nextflow.config
-├── README.md
-└── .gitignore
-```
+| Software | Purpose |
+|-----------|---------|
+| Nextflow DSL2 | Workflow management |
+| Docker | Reproducible execution |
+| FastQC | Read quality control |
+| Fastp | Read trimming |
+| BWA-MEM2 | Read alignment |
+| Samtools | BAM processing |
+| GATK | Duplicate marking |
+| CNVkit | CNV detection and analysis |
 
 ---
 
-## Requirements
+# Installation
 
-- Nextflow >= 24.x
-- Docker
-- Java 17+
-
----
-
-## Running the Pipeline
+Clone the repository
 
 ```bash
-nextflow run main.nf \
-    -resume
+git clone https://github.com/rahuls472/Nextflow-CNVkit-Trio-Pipeline.git
+
+cd Nextflow-CNVkit-Trio-Pipeline
 ```
 
-To generate the workflow DAG:
+---
+
+# Run the Pipeline
+
+```bash
+nextflow run main.nf -resume
+```
+
+Generate workflow reports
 
 ```bash
 nextflow run main.nf \
     -resume \
-    -with-dag pipeline_dag.html
+    -with-dag pipeline_dag.html \
+    -with-report report.html \
+    -with-timeline timeline.html
 ```
 
 ---
 
-## Pipeline Execution
-
-The pipeline successfully completed all stages.
+# Pipeline Execution
 
 ![Pipeline Execution](Screenshots/terminal_process.png)
 
 ---
 
-## Output
+# Output
 
 The pipeline produces:
 
 ```
 results/
-│
+
 ├── fastqc/
 ├── fastp/
 ├── alignment/
@@ -175,37 +217,44 @@ results/
 
 ---
 
-## Technologies Used
+# Repository Structure
 
-- Nextflow DSL2
-- Docker
-- BWA-MEM2
-- Samtools
-- GATK
-- FastQC
-- Fastp
-- CNVkit
+```
+Nextflow-CNVkit-Trio-Pipeline/
+
+├── modules/
+├── Screenshots/
+├── assets/
+├── data/
+├── main.nf
+├── nextflow.config
+├── README.md
+└── .gitignore
+```
 
 ---
 
-## Future Improvements
+# Future Improvements
 
 - MultiQC integration
-- AnnotSV-based CNV annotation
+- AnnotSV annotation
 - Sample sheet support
-- nf-core style parameter validation
-- Automated HTML reports
+- nf-core compatible configuration
+- Automated HTML summary report
 
 ---
 
-## Author
+# Acknowledgements
+
+- **CNVkit** for copy number variation analysis and workflow concepts. :contentReference[oaicite:1]{index=1}
+- The **Zenodo CNVkit example dataset**, which provides the trio sequencing data and reference genome used to develop and test this pipeline. :contentReference[oaicite:2]{index=2}
+
+---
+
+# Author
 
 **Rahul Kumar Singh**
 
 M.Sc. Bioinformatics
 
 GitHub: https://github.com/rahuls472
-
-LinkedIn: *(Add your LinkedIn profile here)*
-
----
