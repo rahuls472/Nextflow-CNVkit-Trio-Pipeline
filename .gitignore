@@ -1,0 +1,98 @@
+# ==========================
+# Nextflow
+# ==========================
+.nextflow/
+.nextflow*
+work/
+trace.txt
+timeline.html
+report.html
+*.trace
+*.timeline
+*.report
+
+
+# Nextflow logs
+.nextflow.log*
+
+# ==========================
+# Results
+# ==========================
+results/
+
+# Keep folder structure (optional)
+!results/.gitkeep
+
+# ==========================
+# Input data
+# ==========================
+data/
+!data/.gitkeep
+
+# ==========================
+# Reference genomes
+# ==========================
+assets/reference/
+*.fa
+*.fasta
+*.fna
+*.fai
+*.dict
+*.amb
+*.ann
+*.bwt
+*.pac
+*.sa
+
+# ==========================
+# Sequencing files
+# ==========================
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Alignment files
+*.sam
+*.bam
+*.bai
+
+# CNVkit outputs
+*.cnn
+*.cnr
+*.cns
+*.call.cns
+
+# Exported files
+*.vcf
+*.vcf.gz
+*.bed
+
+# QC reports
+*.zip
+*.pdf
+
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.pyc
+*.pyo
+
+# ==========================
+# Conda
+# ==========================
+.env
+.venv
+conda-meta/
+
+# ==========================
+# VS Code
+# ==========================
+.vscode/
+
+# ==========================
+# macOS/Linux
+# ==========================
+.DS_Store
+Thumbs.db
